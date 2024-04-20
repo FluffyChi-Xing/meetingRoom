@@ -1,6 +1,12 @@
 <script setup>
 import { ref } from "vue";
 const value = ref(false)
+//url
+const url = ref('https://github.com/FluffyChi-Xing/meetingRoom.git')
+//jump
+const jump = () => {
+  window.location.href = url.value
+}
 </script>
 
 <template>
@@ -20,7 +26,7 @@ const value = ref(false)
             <el-switch v-model="value" />
           </div>
           <el-divider direction="vertical" style="height: 100%" />
-          <div class="w-[31px] h-full relative block ml-1 cursor-pointer">
+          <div @click="jump" class="w-[31px] h-full relative block ml-1 cursor-pointer">
             <img src="../../assets/image/github.png" alt="github" class="w-full h-full relative block object-cover">
           </div>
         </div>
