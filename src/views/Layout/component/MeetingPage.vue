@@ -2,6 +2,7 @@
 import { useRouter } from "vue-router";
 import {UserFilled} from "@element-plus/icons-vue";
 import SiderBar from "@/components/SideBar/SiderBar.vue";
+import BreadCrumb from "@/components/BreadCrumb/BreadCrumb.vue";
 //router
 const router = useRouter()
 //function
@@ -23,7 +24,7 @@ const jumpTo = () => {
         <RouterView />
       </div>
       <div class="w-full h-full relative block pt-14">
-        <div class="w-auto h-10 relative flex mx-auto">
+        <div class="w-auto h-10 relative flex mx-auto mb-4">
           <el-divider direction="vertical" style="height: 100%;margin-left: 5px;margin-right: 5px" />
           <div class="w-10 h-full relative block cursor-pointer overflow-hidden">
             <el-avatar @click="jumpTo" shape="square" :icon="UserFilled" />
@@ -32,6 +33,8 @@ const jumpTo = () => {
             用户中心
           </div>
         </div>
+        <!-- 面包屑导航 -->
+        <BreadCrumb />
       </div>
     </div>
   </div>

@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from "vue";
-import {Bell, List} from "@element-plus/icons-vue";
+import {Bell, Clock, EditPen, Files, List, PieChart, Setting} from "@element-plus/icons-vue";
 import { onMounted } from "vue";
 import { watch } from "vue";
 import { useRouter } from "vue-router";
@@ -14,18 +14,24 @@ const jumpTo = () => {
   router.push('/history')
 }
 const goBack = () => {
-  router.back()
+  router.push('/meeting')
+}
+const goRoom = () => {
+  router.push('/room')
 }
 //route
 const route = useRoute()
 //checkRoute
 const checkRoute = () => {
   switch (route.fullPath) {
-    case '':
+    case '/meeting':
       defaultActive.value = '1'
           break;
     case '/history':
       defaultActive.value = '2'
+          break;
+    case '/room':
+      defaultActive.value = '3-1'
           break;
   }
 }
@@ -37,6 +43,8 @@ onMounted(() => {
 watch(() => route.fullPath,() => {
   checkRoute()
 })
+//isShow
+const isShow = ref(true)
 </script>
 
 <template>
@@ -54,6 +62,30 @@ watch(() => route.fullPath,() => {
         <el-icon><Bell /></el-icon>
         <span>预定历史</span>
       </el-menu-item>
+      <el-sub-menu v-show="isShow" index="3">
+        <template #title>
+          <el-icon><Setting /></el-icon>
+          <span>后台管理</span>
+        </template>
+        <el-menu-item-group>
+          <el-menu-item index="3-1" @click="goRoom">
+            <el-icon><EditPen /></el-icon>
+            <span>会议室管理</span>
+          </el-menu-item>
+          <el-menu-item index="3-2">
+            <el-icon><Files /></el-icon>
+            <span>用户管理</span>
+          </el-menu-item>
+          <el-menu-item index="3-3">
+            <el-icon><Clock /></el-icon>
+            <span>预约管理</span>
+          </el-menu-item>
+          <el-menu-item index="3-4">
+            <el-icon><PieChart /></el-icon>
+            <span>统计</span>
+          </el-menu-item>
+        </el-menu-item-group>
+      </el-sub-menu>
     </el-menu>
   </div>
 </template>

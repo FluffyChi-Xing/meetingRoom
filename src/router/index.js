@@ -7,6 +7,7 @@ import MeetingPage from "@/views/Layout/component/MeetingPage.vue";
 import MeetList from "@/views/Layout/component/MeetList.vue";
 import MeetHistory from "@/views/Layout/component/MeetHistory.vue";
 import UserManage from "@/views/Layout/component/UserManage.vue";
+import MeetingRoom from "@/views/Layout/component/MeetingRoom.vue";
 const router = createRouter({
   history: createWebHashHistory(),
   routes: [
@@ -39,6 +40,11 @@ const router = createRouter({
               path: '/user',
               name: 'user',
               component: UserManage
+            },
+            {
+              path: '/room',
+              name: 'name',
+              component: MeetingRoom
             }
           ]
         }
