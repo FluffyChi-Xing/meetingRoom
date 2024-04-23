@@ -25,6 +25,9 @@ const userManage = () => {
 const book = () => {
   router.push('/book')
 }
+const statistic = () => {
+  router.push('/statistic')
+}
 //route
 const route = useRoute()
 //checkRoute
@@ -44,6 +47,9 @@ const checkRoute = () => {
           break;
     case '/book':
       defaultActive.value = '3-3'
+          break;
+    case '/statistic':
+      defaultActive.value = '3-4'
           break;
   }
 }
@@ -92,7 +98,7 @@ const isShow = ref(true)
             <el-icon><Clock /></el-icon>
             <span>预约管理</span>
           </el-menu-item>
-          <el-menu-item index="3-4">
+          <el-menu-item index="3-4" @click="statistic">
             <el-icon><PieChart /></el-icon>
             <span>统计</span>
           </el-menu-item>

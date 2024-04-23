@@ -36,6 +36,9 @@ const setter = () => {
       case '/book':
         routerList.value[i].name = '预约管理'
         break;
+      case '/statistic':
+        routerList.value[i].name = '统计'
+        break;
     }
   }
 }

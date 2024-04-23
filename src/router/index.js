@@ -10,6 +10,7 @@ import MeetingRoom from "@/views/Layout/component/MeetingRoom.vue";
 import UserCenter from "@/views/Layout/component/UserCenter.vue";
 import UserManage from "@/views/Layout/component/UserManage.vue";
 import BookManage from "@/views/Layout/component/BookManage.vue";
+import StatisticPage from "@/views/Layout/component/StatisticPage.vue";
 const router = createRouter({
   history: createWebHashHistory(),
   routes: [
@@ -57,6 +58,11 @@ const router = createRouter({
               path: '/book',
               name: 'book',
               component: BookManage
+            },
+            {
+              path: '/statistic',
+              name: 'statistic',
+              component: StatisticPage
             }
           ]
         }
