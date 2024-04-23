@@ -6,8 +6,10 @@ import LoginPage from "@/views/Login/LoginPage.vue";
 import MeetingPage from "@/views/Layout/component/MeetingPage.vue";
 import MeetList from "@/views/Layout/component/MeetList.vue";
 import MeetHistory from "@/views/Layout/component/MeetHistory.vue";
-import UserManage from "@/views/Layout/component/UserManage.vue";
 import MeetingRoom from "@/views/Layout/component/MeetingRoom.vue";
+import UserCenter from "@/views/Layout/component/UserCenter.vue";
+import UserManage from "@/views/Layout/component/UserManage.vue";
+import BookManage from "@/views/Layout/component/BookManage.vue";
 const router = createRouter({
   history: createWebHashHistory(),
   routes: [
@@ -39,12 +41,22 @@ const router = createRouter({
             {
               path: '/user',
               name: 'user',
+              component: UserCenter
+            },
+            {
+              path: '/userMan',
+              name: 'userMan',
               component: UserManage
             },
             {
               path: '/room',
               name: 'name',
               component: MeetingRoom
+            },
+            {
+              path: '/book',
+              name: 'book',
+              component: BookManage
             }
           ]
         }

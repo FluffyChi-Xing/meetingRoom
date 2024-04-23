@@ -30,6 +30,12 @@ const setter = () => {
       case '/user' :
         routerList.value[i].name = '用户中心'
         break;
+      case '/userMan':
+        routerList.value[i].name = '用户管理'
+        break;
+      case '/book':
+        routerList.value[i].name = '预约管理'
+        break;
     }
   }
 }

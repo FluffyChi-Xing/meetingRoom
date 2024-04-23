@@ -19,6 +19,12 @@ const goBack = () => {
 const goRoom = () => {
   router.push('/room')
 }
+const userManage = () => {
+  router.push('/userMan')
+}
+const book = () => {
+  router.push('/book')
+}
 //route
 const route = useRoute()
 //checkRoute
@@ -32,6 +38,12 @@ const checkRoute = () => {
           break;
     case '/room':
       defaultActive.value = '3-1'
+          break;
+    case '/userMan':
+      defaultActive.value = '3-2'
+          break;
+    case '/book':
+      defaultActive.value = '3-3'
           break;
   }
 }
@@ -72,11 +84,11 @@ const isShow = ref(true)
             <el-icon><EditPen /></el-icon>
             <span>会议室管理</span>
           </el-menu-item>
-          <el-menu-item index="3-2">
+          <el-menu-item index="3-2" @click="userManage">
             <el-icon><Files /></el-icon>
             <span>用户管理</span>
           </el-menu-item>
-          <el-menu-item index="3-3">
+          <el-menu-item index="3-3" @click="book">
             <el-icon><Clock /></el-icon>
             <span>预约管理</span>
           </el-menu-item>
