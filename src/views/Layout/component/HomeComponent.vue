@@ -29,10 +29,15 @@ const getStart = () => {
             项目源自于掘金
           </div>
           <div class="w-full h-full relative flex px-4">
-            <el-button @click="getStart" style="background-color: #44bd87;color: black;outline: none;border: none" round size="large" class="my-auto">Get Start</el-button>
+            <el-button @click="getStart" style="background-color: #E0234E;color: black;outline: none;border: none" round size="large" class="my-auto">Get Start</el-button>
           </div>
         </div>
-        <div class="w-full h-full relative block"></div>
+        <div class="w-full h-full relative block">
+          <div class="w-full h-full relative block img-bg"></div>
+          <div class="w-[300px] h-[300px] my-auto absolute top-4 right-14 block">
+            <img :src="nest" alt="nest" class="w-full h-full relative block object-cover">
+          </div>
+        </div>
       </div>
       <div class="w-full h-full relative grid grid-cols-3 gap-3 py-4">
         <!-- 特点说明 -->
@@ -100,8 +105,14 @@ const getStart = () => {
   border-color:  #00DC82;
 }
 .title {
-  background: -webkit-linear-gradient(120deg, #35495e -80%, #41b883);
+  background: -webkit-linear-gradient(120deg, #35495e -80%, #E0234E);
   -webkit-text-fill-color: transparent;
   background-clip: text;
+}
+.img-bg {
+  --vp-home-hero-image-background-image: linear-gradient(-45deg, #E0234E 30%, #35495e80);
+  --vp-home-hero-image-filter: blur(72px);
+  background-image: var(--vp-home-hero-image-background-image);
+  filter: var(--vp-home-hero-image-filter);
 }
 </style>

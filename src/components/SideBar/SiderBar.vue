@@ -1,10 +1,13 @@
 <script setup>
 import { ref } from "vue";
 import {Bell, Clock, EditPen, Files, List, PieChart, Setting} from "@element-plus/icons-vue";
+import { useCounterStore } from "@/stores/counter.js";
 import { onMounted } from "vue";
 import { watch } from "vue";
 import { useRouter } from "vue-router";
 import { useRoute } from "vue-router";
+//store
+const store = useCounterStore()
 //default
 const defaultActive = ref('1')
 //router
@@ -53,16 +56,26 @@ const checkRoute = () => {
           break;
   }
 }
+//根据权限控制菜单
+//isShow
+const isShow = ref(true)
+const show = () => {
+  if (store.currentPermission === 'true' ){
+    isShow.value = true
+  }
+  if (store.currentPermission === 'false'){
+    isShow.value = false
+  }
+}
 //挂载
 onMounted(() => {
   checkRoute()
+  show()
 })
 //路由变化
 watch(() => route.fullPath,() => {
   checkRoute()
 })
-//isShow
-const isShow = ref(true)
 </script>
 
 <template>

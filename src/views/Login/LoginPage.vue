@@ -2,19 +2,24 @@
 import { ref,reactive } from "vue";
 import {ElMessage} from "element-plus";
 import { useRouter} from "vue-router";
+import { useCounterStore } from "@/stores/counter.js";
 import axios from "axios";
+//store
+const store = useCounterStore()
 //active
 const active = ref('first')
 //login-form
 const loginForm = reactive({
   username: '',
-  password: ''
+  password: '',
+  Admin: '1'
 })
 //router
 const router = useRouter()
 //login submit
 //sleep()
-const loading = ref(false)
+//const loading = ref(false)
+/*
 const login = () => {
   if (loginForm.password !== '' && loginForm.username !== '') {
     loading.value = true
@@ -32,6 +37,8 @@ const login = () => {
     message: '用户名或密码不能为空'
   })
 }
+ */
+
 //register
 const registerForm = reactive({
   username: '',
@@ -118,6 +125,68 @@ const registerSubmit = () => {
     })
   }
 }
+//login submit
+const loginSubmit = () => {
+  if (!loginForm.username) {
+    ElMessage({
+      type: "warning",
+      message: '用户名不可为空'
+    })
+  }
+  if (!loginForm.password) {
+    ElMessage({
+      type: "warning",
+      message: '密码不可为空'
+    })
+  }
+  if (loginForm.username && loginForm.password ) {
+    let Admin = ref();
+    if (loginForm.Admin === '1') {
+      Admin.value = 'false'
+    }
+    if (loginForm.Admin === '2'){
+      Admin.value = 'true'
+    }
+    axios.post('http://localhost:3000/user/login',{
+      username: loginForm.username,
+      password: loginForm.password,
+      isAdmin: Admin.value,
+    }, {
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      }
+    }).then((res) => {
+      if (res.data.data.code === 400){
+        ElMessage({
+          type: "warning",
+          message: res.data.data.message
+        })
+      }else {
+        router.replace('/meeting')
+        ElMessage({
+          type: "success",
+          message: res.data.message
+        })
+        //缓存accessToken和refreshToken
+        const accessToken = ref()
+        accessToken.value = res.data.data.accessToken
+        const refreshToken = ref()
+        refreshToken.value = res.data.data.refreshToken
+        localStorage.setItem('access',accessToken.value)
+        localStorage.setItem('refresh',refreshToken.value)
+        //暂存当前权限
+        store.currentPermission = res.data.data.userInfo.isAdmin
+      }
+    }).catch((error) => {
+      console.log(error)
+    })
+  } else {
+    ElMessage({
+      type: "warning",
+      message: '登录错误'
+    })
+  }
+}
 </script>
 
 <template>
@@ -128,7 +197,7 @@ const registerSubmit = () => {
           <span class="font-bold">会议室预约系统</span>
         </template>
         <!-- tabs栏 -->
-        <div class="w-full h-auto relative block">
+        <div class="w-full h-auto p-4 relative block">
           <el-tabs class="demo-tabs w-full h-full" v-model="active">
             <el-tab-pane label="登录" name="first">
               <div class="w-full h-auto relative block">
@@ -141,10 +210,18 @@ const registerSubmit = () => {
                     <el-input placeholder="请输入用户名" v-model="loginForm.username" prefix-icon="User" clearable maxlength="10" show-word-limit />
                   </el-form-item>
                   <el-form-item label="密码">
-                    <el-input placeholder="请输入密码" v-model="loginForm.password" prefix-icon="Lock" clearable type="password" show-password />
+                    <el-input placeholder="请输入密码" maxlength="6" show-word-limit v-model="loginForm.password" prefix-icon="Lock" clearable type="password" show-password />
+                  </el-form-item>
+                  <el-form-item label="是否为管理员">
+                    <el-radio-group
+                        v-model="loginForm.Admin"
+                    >
+                      <el-radio value="1">否</el-radio>
+                      <el-radio value="2">是</el-radio>
+                    </el-radio-group>
                   </el-form-item>
                   <el-form-item>
-                    <el-button :loading="loading" type="primary" round class="w-full h-auto relative block" @click="login">登录</el-button>
+                    <el-button type="primary" round class="w-full h-auto relative block" @click="loginSubmit">登录</el-button>
                   </el-form-item>
                 </el-form>
               </div>

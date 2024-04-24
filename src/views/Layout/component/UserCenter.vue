@@ -1,12 +1,51 @@
 <script setup>
-import { reactive } from "vue";
+import { reactive,ref } from "vue";
+import { onMounted } from "vue";
+import axios from "axios";
+import { useCounterStore } from "@/stores/counter.js";
 import {UserFilled} from "@element-plus/icons-vue";
+//store
+const store = useCounterStore()
 //user
 const user = reactive({
-  name: '张三',
-  password: '12111212',
-  email: '21311211@xx.com',
+  name: '',
+  password: '',
+  email: '',
   code: ''
+})
+//refresh
+const refresh = () => {
+  //不管怎么样，目前拉取用户数据先清空localstorage
+  //localStorage.removeItem('accessToken')
+  const refreshToken = localStorage.getItem('refresh');
+  const isAdmin = ref();
+  console.log(typeof isAdmin.value)
+  isAdmin.value = store.currentPermission;
+  axios.get('http://localhost:3000/user/refresh', {
+    params: {
+      refreshToken: refreshToken,
+      isAdmin: isAdmin.value
+    },
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+    }
+  }).then((res) => {
+    console.log(res)
+  }).catch((err) => {
+    console.log(err)
+  })
+}
+//placeholder
+const placeholder = reactive({
+  username: '',
+  password: '',
+  email: ''
+})
+//拉取用户数据
+
+//om
+onMounted(() => {
+  refresh()
 })
 </script>
 
