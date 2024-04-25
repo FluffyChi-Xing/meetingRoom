@@ -17,7 +17,7 @@ const getStart = () => {
 </script>
 
 <template>
-  <div class="w-full h-full relative block">
+  <div class="w-full h-full relative main-bg block">
     <div class="w-2/3 h-full relative grid grid-rows-2 gap-3 mx-auto">
       <div class="w-full h-full relative grid grid-cols-2 gap-3 pt-14">
         <!-- 标题部分 -->
@@ -25,7 +25,7 @@ const getStart = () => {
           <div class="w-full h-full text-[56px] relative block text-left title font-bold">
             Nest会议预订系统
           </div>
-          <div class="w-full h-full relative block text-left text-black font-bold text-[56px] overflow-hidden text-ellipsis">
+          <div class="w-full h-full relative block text-left font-bold text-[56px] overflow-hidden text-ellipsis">
             项目源自于掘金
           </div>
           <div class="w-full h-full relative flex px-4">
@@ -102,7 +102,7 @@ const getStart = () => {
 }
 .card-border:hover {
   transition: all .25s ease-in-out;
-  border-color:  #00DC82;
+  border-color:  #E0234E;
 }
 .title {
   background: -webkit-linear-gradient(120deg, #35495e -80%, #E0234E);
@@ -114,5 +114,9 @@ const getStart = () => {
   --vp-home-hero-image-filter: blur(72px);
   background-image: var(--vp-home-hero-image-background-image);
   filter: var(--vp-home-hero-image-filter);
+}
+.main-bg {
+  color: var(--el-text-color-primary);
+  background-color: var(--el-bg-color-overlay);
 }
 </style>
