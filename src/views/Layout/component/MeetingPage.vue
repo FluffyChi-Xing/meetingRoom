@@ -12,7 +12,7 @@ const jumpTo = () => {
 </script>
 
 <template>
-  <div class="w-full h-full relative block overflow-hidden">
+  <div class="w-full h-full relative block main-bg overflow-hidden">
     <div class="w-4/5 h-full pt-14 relative grid grid-cols-5 mx-auto gap-3">
       <div class="w-full h-full relative flex">
         <div class="w-[95%] h-full relative block">
@@ -29,7 +29,7 @@ const jumpTo = () => {
           <div class="w-10 h-full relative block cursor-pointer overflow-hidden">
             <el-avatar @click="jumpTo" shape="square" :icon="UserFilled" />
           </div>
-          <div class="w-auto ml-3 h-full relative block text-center text-black leading-10">
+          <div class="w-auto ml-3 h-full relative block text-center leading-10">
             用户中心
           </div>
         </div>
@@ -41,5 +41,8 @@ const jumpTo = () => {
 </template>
 
 <style scoped>
-
+.main-bg {
+  color: var(--el-text-color-primary);
+  background-color: var(--el-bg-color-overlay);
+}
 </style>

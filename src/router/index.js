@@ -11,6 +11,7 @@ import UserCenter from "@/views/Layout/component/UserCenter.vue";
 import UserManage from "@/views/Layout/component/UserManage.vue";
 import BookManage from "@/views/Layout/component/BookManage.vue";
 import StatisticPage from "@/views/Layout/component/StatisticPage.vue";
+import axios from "axios";
 const router = createRouter({
   history: createWebHashHistory(),
   routes: [
@@ -75,7 +76,8 @@ const router = createRouter({
     }
   ]
 })
-router.beforeEach(async () => {
+
+router.beforeEach( async () => {
   NProgress.start();
 })
 router.afterEach(async () => {

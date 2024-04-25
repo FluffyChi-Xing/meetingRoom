@@ -1,5 +1,8 @@
 <script setup>
 import { reactive, ref } from "vue";
+import axios from "axios";
+import { onMounted } from "vue";
+import {ElMessage} from "element-plus";
 //top data
 const topForm = reactive({
   username: '',
@@ -7,40 +10,49 @@ const topForm = reactive({
   email: ''
 })
 //user table
-const userTable = ref([
-  {
-    id: 1,
-    username: '张三',
-    nickName: '瘪三',
-    password: '13223242',
-    email: '131ww@ww.com',
-    avatar: 'https://sasasa.ss.com'
-  },
-  {
-    id: 2,
-    username: '张三',
-    nickName: '瘪三',
-    password: '13223242',
-    email: '131ww@ww.com',
-    avatar: 'https://sasasa.ss.com'
-  },
-  {
-    id: 3,
-    username: '张三',
-    nickName: '瘪三',
-    password: '13223242',
-    email: '131ww@ww.com',
-    avatar: 'https://sasasa.ss.com'
-  },
-  {
-    id: 4,
-    username: '张三',
-    nickName: '瘪三',
-    password: '13223242',
-    email: '131ww@ww.com',
-    avatar: 'https://sasasa.ss.com'
-  }
-])
+const userTable = ref()
+//拉取用户列表
+const pullUsers = () => {
+  const accessToken = localStorage.getItem('access').toString();
+  axios.get('http://localhost:3000/user/userList',{
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+      Authorization: `Bearer ${accessToken}`,
+    }
+  }).then((res) => {
+    userTable.value = res.data.data;
+  }).catch((e) => {
+    console.log(e);
+  })
+}
+//实现表单单选
+const currentID = ref()
+const handleCurrentChange = (currentRow) => {
+  currentID.value = currentRow.id;
+}
+//用户权限冻结
+const frozen = () => {
+  const access = localStorage.getItem('access').toString()
+  axios.post('http://localhost:3000/user/frozen',{
+    id: currentID.value
+  }, {
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+      Authorization: `Bearer ${access}`,
+    }
+  }).then((res) => {
+    ElMessage({
+      type: "success",
+      message: res.data.message,
+    })
+  }).catch((err) => {
+    console.log(err);
+  })
+}
+//om
+onMounted(() => {
+  pullUsers() //拉取用户列表
+})
 </script>
 
 <template>
@@ -67,19 +79,21 @@ const userTable = ref([
       </el-form>
     </div>
     <!-- 表格主体 -->
-    <div style="height: calc(100% - 140px)" class="w-full relative block overflow-hidden">
+    <div style="height: calc(100% - 140px)" class="w-full max-h-[533px] relative block overflow-y-scroll">
       <el-table
           :data="userTable"
           stripe
+          highlight-current-row
+          @current-change="handleCurrentChange"
       >
         <el-table-column label="id" prop="id" />
         <el-table-column label="用户名" prop="username" />
         <el-table-column label="密码" prop="password" />
         <el-table-column label="昵称" prop="nickName" />
         <el-table-column label="邮箱" prop="email" />
-        <el-table-column label="用户头像" prop="avatar" />
+        <el-table-column label="用户头像" prop="headPic" />
         <el-table-column label="操作">
-          <el-button type="text" size="small">冻结</el-button>
+          <el-button type="text" size="small" @click="frozen">冻结</el-button>
         </el-table-column>
       </el-table>
     </div>

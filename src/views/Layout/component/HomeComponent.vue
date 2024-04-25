@@ -41,7 +41,7 @@ const getStart = () => {
       </div>
       <div class="w-full h-full relative grid grid-cols-3 gap-3 py-4">
         <!-- 特点说明 -->
-        <div class="w-full card-border h-1/2 p-4 relative grid grid-rows-3 gap-2 rounded-lg overflow-hidden bg-[#f6f6f7]">
+        <div class="w-full card-border h-1/2 p-4 card relative grid grid-rows-3 gap-2 rounded-lg overflow-hidden">
           <!-- nest logo -->
           <div class="w-full h-full relative block">
             <div class="w-10 h-full relative block bg-[#8e96aa24] rounded-md overflow-hidden">
@@ -57,7 +57,7 @@ const getStart = () => {
             这是一个基于nest的会议室预约项目
           </div>
         </div>
-        <div class="w-full card-border h-1/2 p-4 relative grid grid-rows-3 gap-2 rounded-lg overflow-hidden bg-[#f6f6f7]">
+        <div class="w-full card-border h-1/2 p-4 relative grid grid-rows-3 gap-2 rounded-lg overflow-hidden card">
           <!-- element logo -->
           <div class="w-full h-full relative block">
             <div class="w-10 h-full relative block bg-[#8e96aa24] rounded-md overflow-hidden">
@@ -75,7 +75,7 @@ const getStart = () => {
             用户界面使用Element-Plus构建
           </div>
         </div>
-        <div class="w-full card-border h-1/2 p-4 relative grid grid-rows-3 gap-2 rounded-lg overflow-hidden bg-[#f6f6f7]">
+        <div class="w-full card-border h-1/2 p-4 relative grid grid-rows-3 gap-2 rounded-lg overflow-hidden card">
           <!-- Vue logo -->
           <div class="w-full h-full relative block">
             <div class="w-10 h-full relative flex justify-center py-[5px] bg-[#8e96aa24] rounded-md overflow-hidden">
@@ -118,5 +118,9 @@ const getStart = () => {
 .main-bg {
   color: var(--el-text-color-primary);
   background-color: var(--el-bg-color-overlay);
+}
+.card {
+  background-color: #f6f6f7;
+  color: var(--el-text-color-primary);
 }
 </style>
