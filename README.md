@@ -1,6 +1,9 @@
 # meetingRoom
 
 This template should help get you started developing with Vue 3 in Vite.
+掘金小册Nest实战项目之Nest会议室预订系统
+![image](https://github.com/FluffyChi-Xing/meetingRoom/assets/121754413/5b789f78-33f2-4106-bac3-e6d0f25f9690)
+
 
 ## Recommended IDE Setup
 
