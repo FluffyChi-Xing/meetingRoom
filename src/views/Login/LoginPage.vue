@@ -16,29 +16,6 @@ const loginForm = reactive({
 })
 //router
 const router = useRouter()
-//login submit
-//sleep()
-//const loading = ref(false)
-/*
-const login = () => {
-  if (loginForm.password !== '' && loginForm.username !== '') {
-    loading.value = true
-    setTimeout(() => {
-      loading.value = false
-      router.replace('/meeting')
-      ElMessage({
-        type: "success",
-        message: '登陆成功'
-      })
-    },2000)
-  }
-  ElMessage({
-    type: "warning",
-    message: '用户名或密码不能为空'
-  })
-}
- */
-
 //register
 const registerForm = reactive({
   username: '',
@@ -69,22 +46,7 @@ const captcha = () => {
             subText.value = '发送'
           }
         },1000)
-      axios.get('http://localhost:3000/user/captcha',{
-        params: {
-          address: email
-        }
-      }).then((res) => {
-        ElMessage({
-          type: "success",
-          message: res.data.message
-        })
-      }).catch((e) => {
-        ElMessage({
-          type: "warning",
-          message: '错误'
-        })
-        console.log(e)
-      })
+      captcha(email);
     } else {
       ElMessage({
         type: "warning",

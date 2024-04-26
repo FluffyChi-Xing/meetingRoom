@@ -2,12 +2,12 @@
 import { reactive,ref } from "vue";
 import { onMounted } from "vue";
 import axios from "axios";
-import { useCounterStore } from "@/stores/counter.js";
 import {UserFilled} from "@element-plus/icons-vue";
 import {ElMessage} from "element-plus";
 import {captcha} from "@/utils/captcha.js";
-//store
-const store = useCounterStore()
+import { watch } from "vue";
+//access
+const accessToken = localStorage.getItem('access')
 //user
 const user = reactive({
   name: '',
@@ -18,30 +18,6 @@ const user = reactive({
   headPic: '',
   phoneNumber: ''
 })
-//refresh
-const refresh = () => {
-  //不管怎么样，目前拉取用户数据先清空localstorage
-  //localStorage.removeItem('accessToken')
-  const accessToken = localStorage.getItem('access');
-  const refreshToken = localStorage.getItem('refresh');
-  const isAdmin = ref();
-  console.log(typeof isAdmin.value)
-  isAdmin.value = store.currentPermission;
-  axios.get('http://localhost:3000/user/refresh', {
-    params: {
-      refreshToken: refreshToken,
-      isAdmin: isAdmin.value
-    },
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
-    }
-  }).then((res) => {
-    pullUserInfo(accessToken);
-    console.log(res)
-  }).catch((err) => {
-    console.log(err)
-  })
-}
 //placeholder
 const placeholder = reactive({
   username: '',
@@ -122,7 +98,11 @@ const pushCap = () => {
 }
 //om
 onMounted(() => {
-  refresh()
+  pullUserInfo(accessToken)
+})
+//watch
+watch(() => localStorage.getItem('access'),() => {
+  pullUserInfo(accessToken)
 })
 </script>
 

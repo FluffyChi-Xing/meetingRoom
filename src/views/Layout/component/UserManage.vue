@@ -11,16 +11,24 @@ const topForm = reactive({
 })
 //user table
 const userTable = ref()
+//pageNo
+const pageNo = ref(1)
+//pageSize
+const pageSize = ref(5)
 //拉取用户列表
+//分页列表
 const pullUsers = () => {
   const accessToken = localStorage.getItem('access').toString();
-  axios.get('http://localhost:3000/user/userList',{
+  axios.post('http://localhost:3000/user/userList',{
+    pageNo: pageNo.value,
+    pageSize: pageSize.value
+  },{
     headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
       Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/x-www-form-urlencoded",
     }
   }).then((res) => {
-    userTable.value = res.data.data;
+    userTable.value = res.data.data.list;
   }).catch((e) => {
     console.log(e);
   })
@@ -49,6 +57,36 @@ const frozen = () => {
     console.log(err);
   })
 }
+//根据用户名、邮箱、昵称任选其一查询用户
+const fuzzySearch = () => {
+  //获取accessToken
+  const access = localStorage.getItem('access').toString()
+  if (topForm.email || topForm.nickName || topForm.username) {
+    axios.post('http://localhost:3000/user/fuzzy',{
+      email: topForm.email,
+      username: topForm.username,
+      nickName: topForm.nickName,
+    },{
+      headers: {
+        Authorization: `Bearer ${access}`,
+        "Content-Type": "application/x-www-form-urlencoded",
+      }
+    }).then((res) => {
+      userTable.value = res.data.data;
+      ElMessage({
+        type: "success",
+        message: res.data.message,
+      })
+    }).catch((e) => {
+      console.log(e);
+    })
+  } else {
+    ElMessage({
+      type: "warning",
+      message: '三个参数不可同时为空',
+    })
+  }
+}
 //om
 onMounted(() => {
   pullUsers() //拉取用户列表
@@ -71,10 +109,13 @@ onMounted(() => {
           <el-input v-model="topForm.nickName" placeholder="请输入昵称" clearable />
         </el-form-item>
         <el-form-item>
-          <el-button icon="Search" type="primary">搜索</el-button>
+          <el-button icon="Search" type="primary" @click="fuzzySearch">搜索</el-button>
         </el-form-item>
         <el-form-item label="邮箱">
           <el-input v-model="topForm.email" placeholder="请输入昵称" clearable />
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" icon="Refresh" @click="pullUsers">刷新</el-button>
         </el-form-item>
       </el-form>
     </div>
