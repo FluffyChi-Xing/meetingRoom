@@ -1,52 +1,36 @@
 <script setup>
 import { ref } from "vue";
+import {onMounted} from "vue";
+import axios from "axios";
+import {ElMessage} from "element-plus";
+//access
+const access = localStorage.getItem('access').toString()
+//pageNo
+const pageNo = ref(1)
 //table
-const table = ref([
-  {
-    id: 1,
-    name: '一号',
-    fromTo: '2024-08-12~2024-08-13',
-    person: '张三',
-    more: 'BIOS是英文"Basic Input Output System"的缩略词，' +
-        '直译过来后中文名称就是"基本输入输出系统"。在IBM PC兼容系统上' +
-        '，是一种业界标准的固件接口。 [1]BIOS这个字眼是在1975年第一次由' +
-        'CP/M操作系统中出现。 [2]BIOS是个人电脑启动时加载的第一个软件。',
-    value: 50
-  },
-  {
-    id: 2,
-    name: '一号',
-    fromTo: '2024-08-12~2024-08-13',
-    person: '王五',
-    more: 'BIOS是英文"Basic Input Output System"的缩略词，' +
-        '直译过来后中文名称就是"基本输入输出系统"。在IBM PC兼容系统上' +
-        '，是一种业界标准的固件接口。 [1]BIOS这个字眼是在1975年第一次由' +
-        'CP/M操作系统中出现。 [2]BIOS是个人电脑启动时加载的第一个软件。',
-    value: 100
-  },
-  {
-    id: 3,
-    name: '二号',
-    fromTo: '2024-08-12~2024-08-13',
-    person: '张三',
-    more: 'BIOS是英文"Basic Input Output System"的缩略词，' +
-        '直译过来后中文名称就是"基本输入输出系统"。在IBM PC兼容系统上' +
-        '，是一种业界标准的固件接口。 [1]BIOS这个字眼是在1975年第一次由' +
-        'CP/M操作系统中出现。 [2]BIOS是个人电脑启动时加载的第一个软件。',
-    value: 50
-  },
-  {
-    id: 4,
-    name: '三号',
-    fromTo: '2024-08-12~2024-08-13',
-    person: '李四',
-    more: 'BIOS是英文"Basic Input Output System"的缩略词，' +
-        '直译过来后中文名称就是"基本输入输出系统"。在IBM PC兼容系统上' +
-        '，是一种业界标准的固件接口。 [1]BIOS这个字眼是在1975年第一次由' +
-        'CP/M操作系统中出现。 [2]BIOS是个人电脑启动时加载的第一个软件。',
-    value: 100
-  }
-])
+const table = ref()
+const pullList = () => {
+  axios.post('http://localhost:3000/booking/pull',{
+    pageSize: 5,
+    pageNo: pageNo.value,
+  },{
+    headers: {
+      Authorization: `Bearer ${access}`,
+    }
+  }).then((res) => {
+    table.value = res.data.data;
+    ElMessage({
+      type: "success",
+      message: res.data.message,
+    })
+  }).catch((err) => {
+    console.log(err);
+  })
+}
+//om
+onMounted(() => {
+  pullList()
+})
 </script>
 
 <template>
@@ -59,7 +43,7 @@ const table = ref([
       >
         <el-table-column label="id" prop="id" />
         <el-table-column label="会议室名" prop="name" />
-        <el-table-column label="起止时间" prop="fromTo" />
+        <el-table-column label="起止时间" prop="startTime" />
         <el-table-column label="与会人员" prop="person" />
         <el-table-column label="备注" type="expand">
           <template #default="props">
@@ -70,8 +54,8 @@ const table = ref([
         </el-table-column>
         <el-table-column label="状态">
           <template #default="props">
-            <el-progress :percentage="props.row.value">
-              <span>{{props.row.value === 100 ? '批准' : '审核中'}}</span>
+            <el-progress :percentage="props.row.sign">
+              <span>{{props.row.sign === 100 ? '批准' : '审核中'}}</span>
             </el-progress>
           </template>
         </el-table-column>

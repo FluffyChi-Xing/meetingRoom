@@ -1,5 +1,8 @@
 <script setup>
 import { reactive,ref } from "vue";
+import axios from "axios";
+import {onMounted} from "vue";
+import {ElMessage} from "element-plus";
 //search
 const search = reactive({
   name: '',
@@ -7,37 +10,40 @@ const search = reactive({
   location: '',
   item: ''
 })
+//pageNo
+const pageNo = ref(1)
 //table
-const table = ref([
-  {
-    id: 1,
-    name: '一号',
-    capacity: 50,
-    location: '三楼',
-    item: '白板'
-  },
-  {
-    id: 2,
-    name: '二号',
-    capacity: 50,
-    location: '五楼',
-    item: '白板'
-  },
-  {
-    id: 3,
-    name: '三号',
-    capacity: 50,
-    location: '二楼',
-    item: '白板'
-  },
-  {
-    id: 4,
-    name: '四号',
-    capacity: 50,
-    location: '三楼',
-    item: '白板'
-  }
-])
+//从后端拉取会议室数据
+const table = ref()
+const access = localStorage.getItem('access').toString();
+const pullList = () => {
+  axios.post('http://localhost:3000/meeting/getAll',{
+    pageSize: 5,
+    pageNo: pageNo.value,
+  },{
+    headers: {
+      Authorization: `Bearer ${access}`,
+      "Content-Type": "application/x-www-form-urlencoded",
+    }
+  }).then((res) => {
+    table.value = res.data.data;
+    ElMessage({
+      type: "success",
+      message: res.data.message,
+    })
+  }).catch((err) => {
+    console.log(err)
+  })
+}
+//om
+onMounted(() => {
+  pullList()
+})
+//current change
+const change = ref()
+const currentChange = (currentRow) => {
+  change.value = currentRow
+}
 //dialogVisible
 const dialogVisible = ref(false)
 //controller
@@ -85,12 +91,14 @@ const meeting = reactive({
       <el-table
           :data="table"
           stripe
+          highlight-current-row
+          @current-change="currentChange"
       >
         <el-table-column label="id" prop="id" />
         <el-table-column label="会议室名" prop="name" />
         <el-table-column label="会议室人数" prop="capacity" />
         <el-table-column label="会议室地点" prop="location" />
-        <el-table-column label="会议室物品" prop="item" />
+        <el-table-column label="会议室物品" prop="equipment" />
         <el-table-column label="操作">
           <el-button type="text" size="small" @click="controller">预约</el-button>
         </el-table-column>
