@@ -138,6 +138,8 @@ const loginSubmit = () => {
         localStorage.setItem('refresh',refreshToken.value)
         //暂存当前权限
         store.currentPermission = res.data.data.userInfo.isAdmin
+        //暂存当前userId
+        store.userID = res.data.data.userInfo.id;
       }
     }).catch((error) => {
       console.log(error)

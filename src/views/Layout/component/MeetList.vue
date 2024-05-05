@@ -3,10 +3,16 @@ import { reactive,ref } from "vue";
 import axios from "axios";
 import {onMounted} from "vue";
 import {ElMessage} from "element-plus";
+import { refresh } from '@/utils/refreshToken.js'
+import {useCounterStore} from "@/stores/counter.js";
+//page number
+const pageNumber = ref()
+//store
+const store = useCounterStore()
 //search
 const search = reactive({
   name: '',
-  capacity: 12,
+  capacity: 0,
   location: '',
   item: ''
 })
@@ -31,6 +37,11 @@ const pullList = () => {
       type: "success",
       message: res.data.message,
     })
+    //计算当前数据需要的分页数量
+    if (res.data.count === 0) {
+      pageNumber.value = 0;
+    }
+    pageNumber.value = Math.ceil(res.data.count / 5) * 10;
   }).catch((err) => {
     console.log(err)
   })
@@ -38,6 +49,10 @@ const pullList = () => {
 //om
 onMounted(() => {
   pullList()
+  //refresh token
+  setInterval(() => {
+    refresh()
+  },100000)
 })
 //current change
 const change = ref()
@@ -58,6 +73,95 @@ const meeting = reactive({
   person: '',
   more: ''
 })
+//预约会议室
+async function bookRoom(){
+  dialogVisible.value = false
+  if (meeting.name && meeting.person && meeting.from && meeting.to){
+    await axios.post('http://localhost:3000/booking/add',{
+      userId: store.userID,
+      roomId: change.value.id,
+      note: meeting.more,
+      startTime: meeting.from,
+      endTime: meeting.to,
+    },{
+      headers: {
+        Authorization: `Bearer ${access}`
+      }
+    }).then((res) => {
+      ElMessage({
+        type: "success",
+        message: res.data.message,
+      })
+    }).catch((err) => {
+      ElMessage({
+        type: "warning",
+        message: '预约错误',
+      })
+      console.log(err);
+    })
+  } else {
+    ElMessage({
+      type: "warning",
+      message: '参数不能为空',
+    })
+  }
+}
+//fuzzy search room
+const fuzzySearch = () => {
+  if (search.name || search.item || search.location || search.capacity) {
+    axios.post('http://localhost:3000/meeting/search',{
+      name: search.name,
+      location: search.location,
+      capacity: search.capacity,
+      equipment: search.item,
+    },{
+      headers: {
+        Authorization: `Bearer ${access}`
+      }
+    }).then((res) => {
+      table.value = res.data.data;
+      ElMessage({
+        type: "success",
+        message: res.data.message,
+      })
+    }).catch((err) => {
+      console.log(err)
+      ElMessage({
+        type: "warning",
+        message: '错误',
+      })
+    })
+  } else {
+    ElMessage({
+      type: "warning",
+      message: '至少有一个参数不为空'
+    })
+  }
+  if (search.name && search.item && search.location && search.capacity) {
+    axios.post('http://localhost:3000/meeting/search',{
+      name: search.name,
+      location: search.location,
+      capacity: search.capacity,
+      equipment: search.item,
+    },{
+      headers: {
+        Authorization: `Bearer ${access}`
+      }
+    }).then((res) => {
+      table.value = res.data.data;
+      ElMessage({
+        type: "success",
+        message: res.data.message,
+      })
+    }).catch((err) => {
+      console.log(err)
+      ElMessage({
+        type: "warning",
+        message: '错误',
+      })
+    })
+  }
+}
 </script>
 
 <template>
@@ -75,6 +179,9 @@ const meeting = reactive({
         <el-form-item label="会议室位置">
           <el-input v-model="search.location" placeholder="请输入会议室位置" clearable />
         </el-form-item>
+        <el-form-item>
+          <el-button icon="Refresh" type="primary" @click="pullList">刷新</el-button>
+        </el-form-item>
         <el-form-item label="会议室人数">
           <el-input v-model="search.capacity" placeholder="请输入会议室人数" clearable />
         </el-form-item>
@@ -82,7 +189,7 @@ const meeting = reactive({
           <el-input v-model="search.item" placeholder="请输入会议室物品" clearable />
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" icon="Search">搜索</el-button>
+          <el-button type="primary" icon="Search" @click="fuzzySearch">搜索</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -106,7 +213,7 @@ const meeting = reactive({
     </div>
     <!-- 分页器 -->
     <div class="w-full h-10 relative flex justify-end">
-      <el-pagination layout="prev, pager, next" :total="50" />
+      <el-pagination layout="prev, pager, next" :total=pageNumber />
     </div>
     <!-- 预约弹框 -->
     <el-dialog
@@ -146,7 +253,7 @@ const meeting = reactive({
             <el-input v-model="meeting.more" clearable placeholder="请输入备注" />
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" class="w-full h-auto mx-auto" @click="dialogVisible = false">预约</el-button>
+            <el-button type="primary" class="w-full h-auto mx-auto" @click="bookRoom">预约</el-button>
           </el-form-item>
         </el-form>
       </div>

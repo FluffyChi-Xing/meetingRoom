@@ -3,6 +3,9 @@ import { ref } from "vue";
 import {onMounted} from "vue";
 import axios from "axios";
 import {ElMessage} from "element-plus";
+import {refresh} from "@/utils/refreshToken.js";
+//pageNumber
+const pageNumber = ref()
 //access
 const access = localStorage.getItem('access').toString()
 //pageNo
@@ -23,14 +26,46 @@ const pullList = () => {
       type: "success",
       message: res.data.message,
     })
+    if (res.data.count === 0){
+      pageNumber.value = 0
+    }
+    pageNumber.value = Math.ceil(res.data.count / 5) * 10;
   }).catch((err) => {
     console.log(err);
   })
 }
+//current row
+const currentRow = ref()
+const handleCurrent = (current) => {
+  currentRow.value = current
+}
 //om
 onMounted(() => {
   pullList()
+  setInterval(() => {
+    refresh()
+  },100000)
 })
+//handel change page
+const handleCurrentPage = (current) => {
+  pageNo.value = current;
+  axios.post('http://localhost:3000/booking/pull',{
+    pageSize: 5,
+    pageNo: pageNo.value,
+  },{
+    headers: {
+      Authorization: `Bearer ${access}`,
+    }
+  }).then((res) => {
+    table.value = res.data.data;
+    ElMessage({
+      type: "success",
+      message: res.data.message,
+    })
+  }).catch((err) => {
+    console.log(err);
+  })
+}
 </script>
 
 <template>
@@ -40,6 +75,8 @@ onMounted(() => {
       <el-table
           stripe
           :data="table"
+          highlight-current-row
+          @current-change="handleCurrent"
       >
         <el-table-column label="id" prop="id" />
         <el-table-column label="会议室名" prop="name" />
@@ -66,7 +103,7 @@ onMounted(() => {
     </div>
     <!-- 分页器 -->
     <div class="flex w-full h-10 relative overflow-hidden justify-end">
-      <el-pagination layout="prev, pager, next" :total="50" />
+      <el-pagination @current-change="handleCurrentPage" layout="prev, pager, next" :total=pageNumber />
     </div>
   </div>
 </template>

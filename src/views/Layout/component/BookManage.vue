@@ -1,5 +1,8 @@
 <script setup>
 import { reactive, ref } from "vue";
+import {onMounted} from "vue";
+import axios from "axios";
+import {ElMessage} from "element-plus";
 //top form
 const topForm = reactive({
   personName: '',
@@ -42,6 +45,63 @@ const table = ref([
     more: 'sncasncpiacnoasbvouebvuieivnwoivoeiwnviewnoiwenucbevneiwvneinvienveivnienvbnb'
   }
 ])
+//pageNo
+const pageNo = ref(1)
+//access
+const access = localStorage.getItem('access').toString()
+//current pageNumber
+const pageNumber = ref()
+//pull table
+const pullTable = () => {
+  axios.post('http://localhost:3000/booking/pull',{
+    pageSize: 5,
+    pageNo: pageNo.value,
+  },{
+    headers: {
+      Authorization: `Bearer ${access}`
+    }
+  }).then((res) => {
+    table.value = res.data.data;
+    if (res.data.count === 0) {
+      pageNumber.value = 0
+    }
+    pageNumber.value = Math.ceil(res.data.count / 5) * 10;
+    ElMessage({
+      type: "success",
+      message: res.data.message,
+    })
+  }).catch((err) => {
+    console.log(err)
+    ElMessage({
+      type: "warning",
+      message: '错误'
+    })
+  })
+}
+//changePage
+const changePage = (current) => {
+  pageNo.value = current
+  axios.post('http://localhost:3000/booking/pull',{
+    pageSize: 5,
+    pageNo: pageNo.value,
+  },{
+    headers: {
+      Authorization: `Bearer ${access}`
+    }
+  }).then((res) => {
+    table.value = res.data.data;
+  }).catch((err) => {
+    console.log(err)
+    ElMessage({
+      type: "warning",
+      message: '错误'
+    })
+  })
+}
+//om
+onMounted(() => {
+  pullTable()
+})
 </script>
 
 <template>
@@ -77,14 +137,14 @@ const table = ref([
           :data="table"
       >
         <el-table-column label="id" prop="id" />
-        <el-table-column label="预订人" prop="bookPerson" />
-        <el-table-column label="会议室名" prop="roomName" />
-        <el-table-column label="时间" prop="time" />
-        <el-table-column label="参会人员" prop="person" />
+        <el-table-column label="预定状态" prop="status" />
+        <el-table-column label="会议室名" prop="id" />
+        <el-table-column label="开始时间" prop="startTime" />
+        <el-table-column label="截止时间" prop="endTime" />
         <el-table-column label="备注" type="expand">
           <template #default="props">
             <div class="w-full h-full relative block p-4 whitespace-pre-line text-ellipsis overflow-hidden">
-              {{ props.row.more }}
+              {{ props.row.note }}
             </div>
           </template>
         </el-table-column>
@@ -97,7 +157,7 @@ const table = ref([
     </div>
     <!-- 底部分页器 -->
     <div class="w-full h-10 relative flex justify-end">
-      <el-pagination layout="prev, pager, next" :total="50" />
+      <el-pagination @current-change="changePage" layout="prev, pager, next" :total=pageNumber />
     </div>
   </div>
 </template>

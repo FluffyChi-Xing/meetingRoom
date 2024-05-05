@@ -6,6 +6,8 @@ export const useCounterStore = defineStore('counter', () => {
   const doubleCount = computed(() => count.value * 2)
   //当前用户权限
   const currentPermission = ref('false')
+  //userID
+  const userID = ref()
 
-  return { count, doubleCount, currentPermission }
+  return { count, doubleCount, currentPermission,userID }
 })

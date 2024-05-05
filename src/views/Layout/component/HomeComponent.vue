@@ -3,15 +3,28 @@ import { ref } from "vue";
 import {ElementPlus} from "@element-plus/icons-vue";
 import { useRouter } from "vue-router";
 import {ElMessage} from "element-plus";
+import axios from "axios";
 //nest logo
 const nest = ref('https://nestjs.com/img/logo-small.svg')
 //router
 const router = useRouter()
+//access
+const access = localStorage.getItem('access').toString();
 const getStart = () => {
-  router.push('/login')
-  ElMessage({
-    type: "info",
-    message: '登录'
+  axios.get('http://localhost:3000/user/isLogin',{
+    headers: {
+      Authorization: `Bearer ${access}`
+    }
+  }).then((res) => {
+    if (res.data.sign === true) {
+      router.push('/meeting')
+    } else {
+      router.push('/login')
+      ElMessage({
+        type: "info",
+        message: '登录'
+      })
+    }
   })
 }
 </script>
@@ -49,11 +62,11 @@ const getStart = () => {
             </div>
           </div>
           <!-- title -->
-          <div class="w-full h-full relative block text-left text-black font-bold leading-10">
+          <div class="w-full h-full relative block text-left font-bold leading-10">
             后端基于Nest实现
           </div>
           <!-- description -->
-          <div class="w-full h-full relative block text-left text-black font-thin">
+          <div class="w-full h-full relative block text-left font-thin">
             这是一个基于nest的会议室预约项目
           </div>
         </div>
@@ -67,11 +80,11 @@ const getStart = () => {
             </div>
           </div>
           <!-- title -->
-          <div class="w-full h-full relative block text-left text-black font-bold leading-10">
+          <div class="w-full h-full relative block text-left font-bold leading-10">
             Element Plus
           </div>
           <!-- description -->
-          <div class="w-full h-full relative block text-left text-black font-thin">
+          <div class="w-full h-full relative block text-left font-thin">
             用户界面使用Element-Plus构建
           </div>
         </div>
@@ -83,11 +96,11 @@ const getStart = () => {
             </div>
           </div>
           <!-- title -->
-          <div class="w-full h-full relative block text-left text-black font-bold leading-10">
+          <div class="w-full h-full relative block text-left font-bold leading-10">
             前端基于Vue 3.0 框架
           </div>
           <!-- description -->
-          <div class="w-full h-full relative block text-left text-black font-thin">
+          <div class="w-full h-full relative block text-left font-thin">
             本项目使用Vue 3.0 框架作为基础
           </div>
         </div>
@@ -120,7 +133,7 @@ const getStart = () => {
   background-color: var(--el-bg-color-overlay);
 }
 .card {
-  background-color: #f6f6f7;
+  background-color: var(--el-bg-color-overlay);
   color: var(--el-text-color-primary);
 }
 </style>

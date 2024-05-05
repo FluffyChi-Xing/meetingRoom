@@ -9,6 +9,8 @@ const topForm = reactive({
   nickName: '',
   email: ''
 })
+//pageNumber
+const pageNumber = ref()
 //user table
 const userTable = ref()
 //pageNo
@@ -29,9 +31,21 @@ const pullUsers = () => {
     }
   }).then((res) => {
     userTable.value = res.data.data.list;
+    ElMessage({
+      type: "success",
+      message: res.data.message,
+    })
+    if (res.data.data.count === 0) {
+      pageNumber.value = 0
+    }
+    pageNumber.value = Math.ceil(res.data.data.count / 5) * 10;
   }).catch((e) => {
     console.log(e);
   })
+}
+//分页拉取
+const changePage = (current) => {
+  pageNumber.value = current
 }
 //实现表单单选
 const currentID = ref()
@@ -140,7 +154,7 @@ onMounted(() => {
     </div>
     <!-- 底部分页器 -->
     <div class="w-full h-10 relative flex justify-end">
-      <el-pagination layout="prev, pager, next" :total="50" />
+      <el-pagination @current-change="changePage" layout="prev, pager, next" :total=pageNumber />
     </div>
   </div>
 </template>
